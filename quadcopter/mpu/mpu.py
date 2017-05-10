@@ -80,7 +80,7 @@ class mpu(threading.Thread):
 	def update(self,dt):
 		self.x_acc, self.y_acc, self.z_acc, self.r_rate, self.p_rate, self.y_rate= self.IMU.readSensors()
 		self.getAngleCompl(dt)
-		self.callbackUpdate(self.roll, self.pitch, self.yaw)
+		self.callbackUpdate(self.x_acc, self.y_acc, self.z_acc, self.roll, self.pitch, self.yaw)
 
 
 	def getDataString(self,data1='',data2=''):
