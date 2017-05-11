@@ -13,7 +13,7 @@ class motor_control():
 			self.start();
 
 	def start(self):
-		print("start motors");
+		print("Start motors");
 		self.motorFR.start();
 		self.motorFL.start();
 		self.motorBL.start();

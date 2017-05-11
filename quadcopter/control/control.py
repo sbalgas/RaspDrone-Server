@@ -8,19 +8,19 @@ class control(object):
 		self.yaw = 0;
 
 		self.minThrottle = 1000;
-		self.maxThrottle = 1900;
+		self.maxThrottle = 2000;
 		self.sensitivityThrottle = 10;
 
 		self.minRoll = 1000;
-		self.maxRoll = 1900;
+		self.maxRoll = 2000;
 		self.sensitivityRoll = 10;
 
 		self.minPitch = 1000;
-		self.maxPitch = 1900;
+		self.maxPitch = 2000;
 		self.sensitivityPitch = 10;
 
 		self.minYaw = 1000;
-		self.maxYaw = 1900;
+		self.maxYaw = 2000;
 		self.sensitivityYaw = 10;
 
 	def getThrottle(self):
