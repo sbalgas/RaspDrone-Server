@@ -23,6 +23,7 @@ class mpu(threading.Thread):
 
 			self.simulation = False;
 		except ImportError:
+			print 'Simulating IMU '
 			self.simulation = True
 		
 		self.roll=0
@@ -81,7 +82,7 @@ class mpu(threading.Thread):
 		self.callbackUpdate = callback
 
 	def update(self,dt):
-		if self.simulation:
+		if self.simulation == False:
 			self.x_acc, self.y_acc, self.z_acc, self.r_rate, self.p_rate, self.y_rate= self.IMU.readSensors()
 		self.getAngleCompl(dt)
 		self.callbackUpdate(self.x_acc, self.y_acc, self.z_acc, self.roll, self.pitch, self.yaw)
