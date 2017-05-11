@@ -1,6 +1,5 @@
 
 import math
-from MPU6050 import MPU6050
 from time import time,sleep
 import threading
 
@@ -10,16 +9,22 @@ class mpu(threading.Thread):
 
 		threading.Thread.__init__(self)
 
-		self.address=address
-		#MPU6050 is an  specific interface to the hw used.
-		#if the imu is different from MPU6050 it is enough to call the
-		#correct interface here
-		self.IMU=MPU6050(address)
-		print 'IMU calibrating...'
-		if updateoffset:
-			self.IMU.updateOffsets('IMU_offset.txt')
-		self.IMU.readOffsets('IMU_offset.txt')
+		try:
+			from MPU6050 import MPU6050
+			self.address=address
+			#MPU6050 is an  specific interface to the hw used.
+			#if the imu is different from MPU6050 it is enough to call the
+			#correct interface here
+			self.IMU=MPU6050(address)
+			print 'IMU calibrating...'
+			if updateoffset:
+				self.IMU.updateOffsets('IMU_offset.txt')
+			self.IMU.readOffsets('IMU_offset.txt')
 
+			self.simulation = False;
+		except ImportError:
+			self.simulation = True
+		
 		self.roll=0
 		self.pitch=0
 		self.yaw=0
@@ -43,8 +48,6 @@ class mpu(threading.Thread):
 		self.datalog +='|r_rate|p_rate|y_rate'
 		self.datalog +='|x_acc|y_acc|z_acc'
 		self.datalog +='\n'
-
-
 
 		inittime=time()
 		tottime=0
@@ -78,7 +81,8 @@ class mpu(threading.Thread):
 		self.callbackUpdate = callback
 
 	def update(self,dt):
-		self.x_acc, self.y_acc, self.z_acc, self.r_rate, self.p_rate, self.y_rate= self.IMU.readSensors()
+		if self.simulation:
+			self.x_acc, self.y_acc, self.z_acc, self.r_rate, self.p_rate, self.y_rate= self.IMU.readSensors()
 		self.getAngleCompl(dt)
 		self.callbackUpdate(self.x_acc, self.y_acc, self.z_acc, self.roll, self.pitch, self.yaw)
 
