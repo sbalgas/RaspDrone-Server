@@ -2,7 +2,10 @@ import threading
 
 from quadcopter.mpu.mpu import mpu
 from quadcopter.control.control import control
-from quadcopter.pid import pid
+from quadcopter.motor.motor_control import motor_control
+from quadcopter.utils.pid import pid
+from quadcopter.utils.functions import map, constrain
+
 
 class quadcopter():
 
@@ -19,7 +22,8 @@ class quadcopter():
 		kd_yaw = 0;
 
 		self.control = control();
-
+		self.motor_controller = motor_control(start=False); 
+		
 		self.pidRollStable 	= pid(kpStable, kiStable, kdStable)
 		self.pidPitchStable = pid(kpStable, kiStable, kdStable)
 		self.pidRoll 		= pid(kp, ki, kd)
@@ -39,6 +43,17 @@ class quadcopter():
 		pidPitch 	= self.pidPitch.calc(pitch - pidPitch);
 		pidYaw		= self.pidYaw.calc(yaw - self.control.getYaw());
 
+
+	def setControl():
+		motorFL_val = map(constrain(acceleration - (roll/2) - (pitch/2) + yaw, 1000, 2000), 1000, 2000, 0, 100)
+		motorBL_val = map(constrain(acceleration - (roll/2) + (pitch/2) - yaw, 1000, 2000), 1000, 2000, 0, 100)
+		motorFR_val = map(constrain(acceleration + (roll/2) - (pitch/2) - yaw, 1000, 2000), 1000, 2000, 0, 100)
+		motorBR_val = map(constrain(acceleration + (roll/2) + (pitch/2) + yaw, 1000, 2000), 1000, 2000, 0, 100)
+		
+		self.motor_controller.setW_FR(motorFR_val);
+		self.motor_controller.setW_FL(motorFL_val);
+		self.motor_controller.setW_BL(motorBL_val);
+		self.motor_controller.setW_BR(motorBR_val);
 
 	def startMPU(self):
 		self.mpu = mpu()
