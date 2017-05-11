@@ -3,9 +3,9 @@ class control(object):
 	
 	def __init__(self):
 		self.throttle = 0;
-		self.roll = 0;
-		self.pitch = 0;
-		self.yaw = 0;
+		self.roll = 1500;
+		self.pitch = 1500;
+		self.yaw = 1500;
 
 		self.minThrottle = 1000;
 		self.maxThrottle = 2000;
