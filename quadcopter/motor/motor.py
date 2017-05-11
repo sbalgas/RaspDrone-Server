@@ -23,7 +23,8 @@ class motor(object):
             from RPIO import PWM
             self.__IO = PWM.Servo()
         except ImportError:
-            print("ERROR");
+            print "MOTOR ERROR ", self.name;
+            print "SIMULATION MODE FOR ", self.name
             self.simulation = True
 
     def setDebug(self, debug):
