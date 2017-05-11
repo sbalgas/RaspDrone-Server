@@ -5,7 +5,7 @@ from quadcopter.control.control import control
 from quadcopter.motor.motor_control import motor_control
 from quadcopter.utils.pid import pid
 from quadcopter.utils.functions import map, constrain
-
+from time import sleep
 
 class quadcopter():
 
@@ -22,7 +22,7 @@ class quadcopter():
 		kd_yaw = 0;
 
 		self.control = control();
-		self.motor_controller = motor_control(start=False); 
+		self.motor_controller = motor_control(True); 
 		
 		self.pidRollStable 	= pid(kpStable, kiStable, kdStable)
 		self.pidPitchStable = pid(kpStable, kiStable, kdStable)
@@ -33,9 +33,11 @@ class quadcopter():
 		t2 = threading.Thread(target = self.startMPU);
 		t2.daemon = True;
 		t2.start();
+		while True:
+			sleep(1);
+			self.control.increaseThrottle();
 
 	def mpuUpdated(self, rollAcc, pitchAcc, yawAcc, roll, pitch, yaw):
-
 		pidRoll		= self.pidRollStable.calc(self.control.getRoll() - rollAcc);
 		pidPitch	= self.pidPitchStable.calc(self.control.getPitch() - pitchAcc);
 
@@ -43,12 +45,13 @@ class quadcopter():
 		pidPitch 	= self.pidPitch.calc(pitch - pidPitch);
 		pidYaw		= self.pidYaw.calc(yaw - self.control.getYaw());
 
+		self.setControl(pidRoll, pidPitch, pidYaw);
 
-	def setControl():
-		motorFL_val = map(constrain(acceleration - (roll/2) - (pitch/2) + yaw, 1000, 2000), 1000, 2000, 0, 100)
-		motorBL_val = map(constrain(acceleration - (roll/2) + (pitch/2) - yaw, 1000, 2000), 1000, 2000, 0, 100)
-		motorFR_val = map(constrain(acceleration + (roll/2) - (pitch/2) - yaw, 1000, 2000), 1000, 2000, 0, 100)
-		motorBR_val = map(constrain(acceleration + (roll/2) + (pitch/2) + yaw, 1000, 2000), 1000, 2000, 0, 100)
+	def setControl(self, roll, pitch, yaw):
+		motorFL_val = map(constrain(self.control.getThrottle() - (roll/2) - (pitch/2) + yaw, 1000, 2000), 1000, 2000, 0, 100)
+		motorBL_val = map(constrain(self.control.getThrottle() - (roll/2) + (pitch/2) - yaw, 1000, 2000), 1000, 2000, 0, 100)
+		motorFR_val = map(constrain(self.control.getThrottle() + (roll/2) - (pitch/2) - yaw, 1000, 2000), 1000, 2000, 0, 100)
+		motorBR_val = map(constrain(self.control.getThrottle() + (roll/2) + (pitch/2) + yaw, 1000, 2000), 1000, 2000, 0, 100)
 		
 		self.motor_controller.setW_FR(motorFR_val);
 		self.motor_controller.setW_FL(motorFL_val);
