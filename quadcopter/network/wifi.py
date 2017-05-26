@@ -1,5 +1,6 @@
 import socket
 import threading
+import json
 
 class wifi():
 
@@ -60,7 +61,7 @@ class wifi():
 	def sendData(self, data):
 		if not self.client:
 			return
-			
+		data = json.dumps(data);
 		print data;
 		if data is None:
 			return;
