@@ -1,3 +1,5 @@
+import socket
+import threading
 
 class wifi():
 
@@ -6,20 +8,18 @@ class wifi():
 		self.client = None;
 		self.callbackReceivedData = None;
 
-		self.prepareSocket()
-		self.loopConection()
-
 	def setCallbackReceivedFata(self, callbackReceivedData):
 		self.callbackReceivedData = callbackReceivedData;
 
 
-	def prepareSocket(self, hostname = "0.0.0.0", port = 5000):
+	def startSocket(self, hostname = "0.0.0.0", port = 5000):
 		print "Starting server"
 		self.s = socket.socket()
 		try:
 			self.s.bind((hostname, port))
 			self.s.listen(5)
 			print "Server Started!!"
+			self.loopConection()
 		except Exception as e:
 			print "Fail Server"
 			print e
@@ -42,6 +42,7 @@ class wifi():
 		while True:
 			try:
 				data = self.client.recv(1024)
+				print data
 			except Exception as e:
 				print "Client close: " + str(e)
 				break
@@ -57,11 +58,14 @@ class wifi():
 
 
 	def sendData(self, data):
+		if not self.client:
+			return
+			
 		print data;
 		if data is None:
 			return;
 		try:
-			self.client.send(data+"\n");
+			self.client.send(data);
 		except Exception as e:
 			print e
 
