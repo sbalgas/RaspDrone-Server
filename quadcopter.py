@@ -21,6 +21,12 @@ class quadcopter():
 		kp_yaw = 0;
 		ki_yaw = 0;
 		kd_yaw = 0;
+
+		self.motorFL_val = 0;
+		self.motorFR_val = 0;
+		self.motorBL_val = 0;
+		self.motorBR_val = 0;
+
 		self.wifi = wifi();
 		self.control = control();
 		self.motor_controller = motor_control(True); 
@@ -48,7 +54,17 @@ class quadcopter():
 
 		self.setControl(pidRoll, pidPitch, pidYaw);
 
-		self.wifi.sendData('{"MotorFL":20, "MotorFR":20, "MotorBL":20}');
+		objectToSend = { 
+			'MotorFL': self.motorFL_val,
+			'MotorFR': self.motorFR_val,
+			'MotorBL': self.motorBL_val,
+			'MotorBR': self.motorBR_val,
+			'Yaw'	 : yaw,
+			'Pitch'	 : pitch,
+			'Roll'	 : roll
+		};
+
+		self.wifi.sendData(objectToSend);
 
 	def callbackReceivedData(self, axis):
 		self.control.setThrottle(axis['Y']);
@@ -58,15 +74,15 @@ class quadcopter():
 
 
 	def setControl(self, roll, pitch, yaw):
-		motorFL_val = map(constrain(self.control.getThrottle() - (roll/2) - (pitch/2) + yaw, 1000, 2000), 1000, 2000, 0, 100)
-		motorBL_val = map(constrain(self.control.getThrottle() - (roll/2) + (pitch/2) - yaw, 1000, 2000), 1000, 2000, 0, 100)
-		motorFR_val = map(constrain(self.control.getThrottle() + (roll/2) - (pitch/2) - yaw, 1000, 2000), 1000, 2000, 0, 100)
-		motorBR_val = map(constrain(self.control.getThrottle() + (roll/2) + (pitch/2) + yaw, 1000, 2000), 1000, 2000, 0, 100)
+		self.motorFL_val = map(constrain(self.control.getThrottle() - (roll/2) - (pitch/2) + yaw, 1000, 2000), 1000, 2000, 0, 100)
+		self.motorBL_val = map(constrain(self.control.getThrottle() - (roll/2) + (pitch/2) - yaw, 1000, 2000), 1000, 2000, 0, 100)
+		self.motorFR_val = map(constrain(self.control.getThrottle() + (roll/2) - (pitch/2) - yaw, 1000, 2000), 1000, 2000, 0, 100)
+		self.motorBR_val = map(constrain(self.control.getThrottle() + (roll/2) + (pitch/2) + yaw, 1000, 2000), 1000, 2000, 0, 100)
 		
-		self.motor_controller.setW_FR(motorFR_val);
-		self.motor_controller.setW_FL(motorFL_val);
-		self.motor_controller.setW_BL(motorBL_val);
-		self.motor_controller.setW_BR(motorBR_val);
+		self.motor_controller.setW_FR(self.motorFR_val);
+		self.motor_controller.setW_FL(self.motorFL_val);
+		self.motor_controller.setW_BL(self.motorBL_val);
+		self.motor_controller.setW_BR(self.motorBR_val);
 
 	def startMPU(self):
 		self.mpu = mpu()
