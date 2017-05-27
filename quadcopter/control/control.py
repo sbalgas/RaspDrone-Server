@@ -35,29 +35,17 @@ class control(object):
 	def getYaw(self):
 		return self.yaw;
 
-	def increaseThrottle(self, qty = 1):
+	def setThrottle(self, qty = 1):
 		self.throttle = self.constrain(self.throttle + qty * self.sensitivityThrottle, self.minThrottle, self.maxThrottle);
 
-	def decreaseThrottle(self, qty = 1):
-		self.throttle = self.constrain(self.throttle - qty * self.sensitivityThrottle, self.minThrottle, self.maxThrottle);
-
-	def increaseRoll(self, qty = 1):
+	def setRoll(self, qty = 1):
 		self.roll = self.constrain(self.roll + qty * self.sensitivityRoll, self.minRoll, self.maxRoll);
 
-	def decreaseRoll(self, qty = 1):
-		self.roll = self.constrain(self.roll - qty * self.sensitivityRoll, self.minRoll, self.maxRoll);
-
-	def increasePitch(self, qty = 1):
+	def setPitch(self, qty = 1):
 		self.pitch = self.constrain(self.pitch + qty * self.sensitivityPitch, self.minPitch, self.maxPitch);
 
-	def decreasePitch(self, qty = 1):
-		self.pitch = self.constrain(self.pitch - qty * self.sensitivityPitch, self.minPitch, self.maxPitch);
-
-	def increaseYaw(self, qty = 1):
+	def setYaw(self, qty = 1):
 		self.yaw = self.constrain(self.yaw + qty * self.sensitivityYaw, self.minYaw, self.maxYaw);
-
-	def decreaseYaw(self, qty = 1):
-		self.yaw = self.constrain(self.yaw - qty * self.sensitivityYaw, self.minYaw, self.maxYaw);
 
 
 	''' Limita number en minNumber y maxNumber'''
