@@ -43,7 +43,7 @@ class wifi():
 		while True:
 			try:
 				data = self.client.recv(1024)
-				print data
+				#print data
 			except Exception as e:
 				print "Client close: " + str(e)
 				break
@@ -63,7 +63,7 @@ class wifi():
 		if not self.client:
 			return
 		data = json.dumps(data);
-		print data;
+		#print data;
 		if data is None:
 			return;
 		try:
