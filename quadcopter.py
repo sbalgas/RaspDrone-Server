@@ -67,10 +67,10 @@ class quadcopter():
 		self.wifi.sendData(objectToSend);
 
 	def callbackReceivedData(self, axis):
-		self.control.setThrottle(axis['Y']);
-		self.control.setYaw(axis['X']);
-		self.control.setRoll(axis['Z']);
-		self.control.setPitch(axis['RZ']);
+		self.control.setThrottle(axis['Throttle']);
+		self.control.setYaw(axis['Yaw']);
+		self.control.setRoll(axis['Roll']);
+		self.control.setPitch(axis['Pitch']);
 
 
 	def setControl(self, roll, pitch, yaw):
