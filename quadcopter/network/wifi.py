@@ -55,6 +55,7 @@ class wifi():
 			self.processJson(data)
 
 		self.client.close()
+		self.client = None;
 		print "exit listen loop"
 
 
@@ -72,7 +73,6 @@ class wifi():
 
 	def processJson(self, jSON):
 		try:
-			jSON = jSON.split()[0]
 			axis = json.loads(jSON)
 		except Exception as e:
 			print "Json Error in ", jSON
