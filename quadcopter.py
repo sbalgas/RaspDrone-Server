@@ -12,13 +12,13 @@ class quadcopter():
 
 	def __init__(self):
 
-		kpStable = 0;
+		kpStable = 1;
 		kiStable = 0;
 		kdStable = 0;
 		kp = 3;
 		ki = 0;
 		kd = 0;
-		kp_yaw = 0;
+		kp_yaw = 5;
 		ki_yaw = 0;
 		kd_yaw = 0;
 
