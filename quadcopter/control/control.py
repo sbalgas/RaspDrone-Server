@@ -46,7 +46,14 @@ class control(object):
 		return pitch;
 
 	def getYaw(self):
-		return self.yaw;
+		yaw = 0;
+		if (self.throttle > 1100):
+			if (self.yaw > (1500+self.deadZone)):
+				yaw = (self.yaw - (1500+self.deadZone))/self.sensitivity;
+			elif (self.yaw < (1500-self.deadZone)):
+				yaw = (self.yaw - (1500-self.deadZone))/self.sensitivity;
+		
+		return yaw;
 
 	def setThrottle(self, qty = 1000):
 		self.throttle = self.constrain(qty, self.minThrottle, self.maxThrottle);
