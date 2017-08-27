@@ -31,11 +31,11 @@ class quadcopter():
 		self.control = control();
 		self.motor_controller = motor_control(True); 
 		
-		self.pidRollStable 	= pid(kpStable, kiStable, kdStable)
-		self.pidPitchStable = pid(kpStable, kiStable, kdStable)
-		self.pidRoll 		= pid(kp, ki, kd)
-		self.pidPitch 		= pid(kp, ki, kd)
-		self.pidYaw 		= pid(kp_yaw, ki_yaw, kd_yaw)
+		self.pidRollStable 	= pid("pidRollStable", kpStable, kiStable, kdStable)
+		self.pidPitchStable = pid("pidPitchStable", kpStable, kiStable, kdStable)
+		self.pidRoll 		= pid("pidRoll", kp, ki, kd)
+		self.pidPitch 		= pid("pidPitch", kp, ki, kd)
+		self.pidYaw 		= pid("pidYaw", kp_yaw, ki_yaw, kd_yaw)
 		
 		t1 = threading.Thread(target = self.startMPU);
 		t1.daemon = True;
