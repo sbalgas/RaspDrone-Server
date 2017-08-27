@@ -26,17 +26,17 @@ class motor_control():
 		self.motorBR.stop();
 
 	def setW_FR (self, w):
-		#print "motorFR: ", int(w); 
+		print "motorFR: ", int(w); 
 		self.motorFR.setW(int(w));
 
 	def setW_FL (self, w):
-		#print "motorFL: ", int(w); 
+		print "motorFL: ", int(w); 
 		self.motorFL.setW(int(w));
 
 	def setW_BR (self, w):
-		#print "motorBR: ", int(w);
+		print "motorBR: ", int(w);
 		self.motorBR.setW(int(w));
 
 	def setW_BL (self, w):
-		#print "motorBL: ", int(w); 
+		print "motorBL: ", int(w); 
 		self.motorBL.setW(int(w));
