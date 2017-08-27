@@ -32,19 +32,15 @@ class control(object):
 		return self.yaw;
 
 	def setThrottle(self, qty = 1000):
-		print "throttle", self.throttle;
 		self.throttle = self.constrain(qty, self.minThrottle, self.maxThrottle);
 
 	def setRoll(self, qty = 1500):
-		print "roll", self.roll;
 		self.roll = self.constrain(qty, self.minRoll, self.maxRoll);
 
 	def setPitch(self, qty = 1500):
-		print "pitch", self.pitch;
 		self.pitch = self.constrain(qty, self.minPitch, self.maxPitch);
 
 	def setYaw(self, qty = 1500):
-		print "yaw", self.yaw;
 		self.yaw = self.constrain(qty, self.minYaw, self.maxYaw);
 
 
