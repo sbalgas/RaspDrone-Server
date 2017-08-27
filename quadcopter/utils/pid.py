@@ -2,7 +2,7 @@ from time import time,sleep
 
 class pid():
 
-	def __init__(self,kp,ki,kd,maxCorr=5):
+	def __init__(self,name,kp,ki,kd,maxCorr=5):
 		self.kp = kp
 		self.ki = ki
 		self.kd = kd
@@ -12,14 +12,17 @@ class pid():
 		self.previousTime = 0.0
 		self.previousError = 0.0
 		self.init=True
+		self.name=name
 		self.maxCorr=maxCorr
 
+	def getName(self):
+		return self.name;
 
 	def calc(self, error):
 		if self.init:
-			#the first time do not calculate pid correction, but init the time data
 			self.previousTime = time()
 			self.init=False
+			print "Initializing ", self.name;
 			return 0
 		else:
 			currentTime = time()

@@ -19,17 +19,41 @@ class control(object):
 		self.minYaw = 1000;
 		self.maxYaw = 2000;
 
+		self.sensitivity = 8;
+		self.deadZone = 13;
+
 	def getThrottle(self):
 		return self.throttle;
 
 	def getRoll(self):
-		return self.roll;
+		roll = 0;
+		if (self.throttle > 1100):
+			if (self.roll > (1500+self.deadZone)):
+				roll = (self.roll - (1500+self.deadZone))/self.sensitivity;
+			elif (self.roll < (1500-self.deadZone)):
+				roll = (self.roll - (1500-self.deadZone))/self.sensitivity;
+		
+		return roll;
 
 	def getPitch(self):
-		return self.pitch;
+		pitch = 0;
+		if (self.throttle > 1100):
+			if (self.pitch > (1500+self.deadZone)):
+				pitch = (self.pitch - (1500+self.deadZone))/self.sensitivity;
+			elif (self.pitch < (1500-self.deadZone)):
+				pitch = (self.pitch - (1500-self.deadZone))/self.sensitivity;
+		
+		return pitch;
 
 	def getYaw(self):
-		return self.yaw;
+		yaw = 0;
+		if (self.throttle > 1100):
+			if (self.yaw > (1500+self.deadZone)):
+				yaw = (self.yaw - (1500+self.deadZone))/self.sensitivity;
+			elif (self.yaw < (1500-self.deadZone)):
+				yaw = (self.yaw - (1500-self.deadZone))/self.sensitivity;
+		
+		return yaw;
 
 	def setThrottle(self, qty = 1000):
 		self.throttle = self.constrain(qty, self.minThrottle, self.maxThrottle);
