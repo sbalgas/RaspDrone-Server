@@ -72,12 +72,16 @@ class wifi():
 			print e
 
 	def processJson(self, jSON):
-		try:
-			axis = json.loads(jSON)
-		except Exception as e:
-			print "Json Error in ", jSON
-			print e 
-			return
-			
-		if self.callbackReceivedData is not None:
-			self.callbackReceivedData(axis);
+
+		jSON = jSON.replace("}{", "}-{");
+
+		for onejSON in jSON.split("-"):
+			try:
+				axis = json.loads(onejSON);
+			except Exception as e:
+				print "Json Error in ", onejSON;
+				print e;
+				continue;
+				
+			if self.callbackReceivedData is not None:
+				self.callbackReceivedData(axis);

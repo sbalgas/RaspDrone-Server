@@ -83,6 +83,7 @@ class quadcopter():
 		self.motor_controller.setW_FL(self.motorFL_val);
 		self.motor_controller.setW_BL(self.motorBL_val);
 		self.motor_controller.setW_BR(self.motorBR_val);
+		print "-----------------";
 
 	def startMPU(self):
 		self.mpu = mpu()
