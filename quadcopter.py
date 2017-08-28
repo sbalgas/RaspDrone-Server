@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import threading
 
 from quadcopter.mpu.mpu import mpu
@@ -51,6 +53,12 @@ class quadcopter():
 		pidRoll 	= self.pidRoll.calc(roll - pidRoll);
 		pidPitch 	= self.pidPitch.calc(pitch - pidPitch);
 		pidYaw		= self.pidYaw.calc(yaw - self.control.getYaw());
+
+		print "pidRoll ", pidRoll;
+		print "pidPitch ", pidPitch;
+		print "pidYaw ", pidYaw;
+
+		return;
 
 		self.setControl(pidRoll, pidPitch, pidYaw);
 
