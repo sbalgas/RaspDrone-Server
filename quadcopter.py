@@ -54,12 +54,6 @@ class quadcopter():
 		pidPitch 	= self.pidPitch.calc(pitch - pidPitch);
 		pidYaw		= self.pidYaw.calc(yaw - self.control.getYaw());
 
-		print "pidRoll ", pidRoll;
-		print "pidPitch ", pidPitch;
-		print "pidYaw ", pidYaw;
-
-		return;
-
 		self.setControl(pidRoll, pidPitch, pidYaw);
 
 		objectToSend = { 
@@ -82,10 +76,11 @@ class quadcopter():
 
 
 	def setControl(self, roll, pitch, yaw):
-		self.motorFL_val = map(constrain(self.control.getThrottle() - (roll/2) - (pitch/2) + yaw, 1000, 2000), 1000, 2000, 0, 100)
-		self.motorBL_val = map(constrain(self.control.getThrottle() - (roll/2) + (pitch/2) - yaw, 1000, 2000), 1000, 2000, 0, 100)
-		self.motorFR_val = map(constrain(self.control.getThrottle() + (roll/2) - (pitch/2) - yaw, 1000, 2000), 1000, 2000, 0, 100)
-		self.motorBR_val = map(constrain(self.control.getThrottle() + (roll/2) + (pitch/2) + yaw, 1000, 2000), 1000, 2000, 0, 100)
+
+		self.motorFL_val = constrain(self.control.getThrottle() - roll - pitch + yaw, 1200, 2000);
+		self.motorBL_val = constrain(self.control.getThrottle() - roll + pitch - yaw, 1200, 2000);
+		self.motorFR_val = constrain(self.control.getThrottle() + roll - pitch - yaw, 1200, 2000);
+		self.motorBR_val = constrain(self.control.getThrottle() + roll + pitch + yaw, 1200, 2000);
 		
 		self.motor_controller.setW_FR(self.motorFR_val);
 		self.motor_controller.setW_FL(self.motorFL_val);

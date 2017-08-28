@@ -8,7 +8,7 @@ class motor(object):
     More info on RPIO in http://pythonhosted.org/RPIO/index.html"""
 
 
-    def __init__(self, name, pin, WMin=0, WMax=100, debug=True, simulation=True):
+    def __init__(self, name, pin, WMin=1000, WMax=2000, debug=True, simulation=True):
         self.name = name
         self.powered = False
         self.simulation = simulation
@@ -37,11 +37,11 @@ class motor(object):
 
     def setWLimits(self, WMin, WMax):
         "set the pin for each motor"
-        if WMin < 0:
-            WMin = 0
+        if WMin < 1000:
+            WMin = 1000
         self.__WMin = WMin
-        if WMax > 100:
-            WMax = 100
+        if WMax > 2000:
+            WMax = 2000
         self.__WMax = WMax
 
     def start(self):
@@ -52,7 +52,7 @@ class motor(object):
                 self.__IO = PWM.Servo()
                 self.powered = True
                 print "Motor ", self.name, " Started";
-                self.setW(0)
+                self.setW(1000)
             except ImportError:
                 self.simulation = True
                 self.powered = False
@@ -60,7 +60,7 @@ class motor(object):
     def stop(self):
         "Stop PWM signal"
 
-        self.setW(0)
+        self.setW(1000)
         if self.powered:
             self.__IO.stop_servo(self.__pin)
             self.powered = False
@@ -86,11 +86,10 @@ class motor(object):
             self.__W = self.__WMin
         if self.__W > self.__WMax:
             self.__W = self.__WMax
-        PW = (1000 + (self.__W) * 10)
-        # Set servo to xxx us
-        #print "PW ", self.name , ": ", PW;
+
+        print self.name,"asd" , self.__W;
         if self.powered:
-            self.__IO.set_servo(self.__pin, PW)
+            self.__IO.set_servo(self.__pin, self.__W)
 
 
 
