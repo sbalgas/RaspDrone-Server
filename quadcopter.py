@@ -31,7 +31,7 @@ class quadcopter():
 
 		self.wifi = wifi();
 		self.control = control();
-		self.motor_controller = motor_control(True); 
+		self.motor_controller = motor_control(); 
 		
 		self.pidRollStable 	= pid("pidRollStable", kpStable, kiStable, kdStable)
 		self.pidPitchStable = pid("pidPitchStable", kpStable, kiStable, kdStable)
@@ -54,7 +54,8 @@ class quadcopter():
 		pidPitch 	= self.pidPitch.calc(pitch - pidPitch);
 		pidYaw		= self.pidYaw.calc(yaw - self.control.getYaw());
 
-		self.setControl(pidRoll, pidPitch, pidYaw);
+		if self.motor_controller.isPowered():
+			self.setControl(pidRoll, pidPitch, pidYaw);
 
 		objectToSend = { 
 			'MotorFL': self.motorFL_val,
@@ -69,10 +70,15 @@ class quadcopter():
 		self.wifi.sendData(objectToSend);
 
 	def callbackReceivedData(self, axis):
-		self.control.setThrottle(axis['Throttle']);
-		self.control.setYaw(axis['Yaw']);
-		self.control.setRoll(axis['Roll']);
-		self.control.setPitch(axis['Pitch']);
+		if self.motor_controller.isPowered():
+			self.control.setThrottle(axis['Throttle']);
+			self.control.setYaw(axis['Yaw']);
+			self.control.setRoll(axis['Roll']);
+			self.control.setPitch(axis['Pitch']);
+			if axis['Throttle'] < 1050 and axis['Yaw'] > 1950:
+				self.motor_controller.stop();	
+		elif axis['Throttle'] < 1050 and axis['Yaw'] < 1050:
+			self.motor_controller.start();
 
 
 	def setControl(self, roll, pitch, yaw):

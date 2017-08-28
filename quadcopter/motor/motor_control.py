@@ -9,8 +9,13 @@ class motor_control():
 		self.motorBL = motor('motorBL', 17, simulation=False);
 		self.motorBR = motor('motorBR', 7, simulation=False);
 
+		self.powered = False;
+
 		if (start):
 			self.start();
+
+	def isPowered(self):
+		return self.powered;
 
 	def start(self):
 		print("Start motors");
@@ -18,8 +23,11 @@ class motor_control():
 		self.motorFL.start();
 		self.motorBL.start();
 		self.motorBR.start();
+		self.powered = True;
 
 	def stop(self):
+		print("Stop motors");
+		self.powered = False;
 		self.motorFR.stop();
 		self.motorFL.stop();
 		self.motorBL.stop();
