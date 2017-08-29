@@ -1,5 +1,4 @@
-
-
+from time import sleep
 
 class motor(object):
     """Manages the currect Angular rotation
@@ -53,6 +52,7 @@ class motor(object):
                 self.powered = True
                 print "Motor ", self.name, " Started";
                 self.setW(1000)
+                sleep(1)
             except ImportError:
                 self.simulation = True
                 self.powered = False
@@ -68,20 +68,18 @@ class motor(object):
     def increaseW(self, step=1):
         "increases W% for the motor"
 
-        self.__W = self.__W + step
-        self.setW(self.__W)
+        self.setW(self.__W + step)
 
     def decreaseW(self, step=1):
         "decreases W% for the motor"
-
-        self.__W = self.__W - step
-        self.setW(self.__W)
+        
+        self.setW(self.__W - step)
 
     def setW(self, W):
         "Checks W% is between limits than sets it"
 
         PW = 0
-        self.__W = W
+        self.__W = int(round(float(W) / 10)) * 10
         if self.__W < self.__WMin:
             self.__W = self.__WMin
         if self.__W > self.__WMax:
