@@ -85,7 +85,7 @@ class motor(object):
         if self.__W > self.__WMax:
             self.__W = self.__WMax
 
-        print self.name,"asd" , self.__W;
+        print self.name, self.__W;
         if self.powered:
             self.__IO.set_servo(self.__pin, self.__W)
 
