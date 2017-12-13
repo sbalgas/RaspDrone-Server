@@ -18,6 +18,9 @@ class pid():
 	def getName(self):
 		return self.name;
 
+	def getPid(self):
+		return {'P' : self.P, 'I' : self.I, 'D' : self.D};
+
 	def calc(self, error):
 		if self.init:
 			self.previousTime = time()
