@@ -1,6 +1,7 @@
 import socket
 import threading
 import json
+#import asyncio
 
 class wifi():
 
@@ -58,19 +59,21 @@ class wifi():
 		self.client = None;
 		print "exit listen loop"
 
-
+	#@asyncio.coroutine
 	def sendData(self, data):
-		if not self.client:
+		if self.client is None:
 			return
+
 		data = json.dumps(data);
 		#print data;
 		if data is None:
-			return;
+			return
 		try:
 			self.client.send(data);
 		except Exception as e:
 			print e
-
+		return
+		
 	def processJson(self, jSON):
 
 		jSON = jSON.replace("}{", "}-{");
