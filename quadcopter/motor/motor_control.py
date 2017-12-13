@@ -30,8 +30,8 @@ class motor_control():
 		self.powered = False;
 		self.motorFR.stop();
 		self.motorFL.stop();
-		self.motorBL.stop();
 		self.motorBR.stop();
+		self.motorBL.stop();
 
 	def setW_FR (self, w):
 		#print "motorFR: ", int(w); 
