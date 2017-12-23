@@ -36,14 +36,14 @@ class pid():
 			self.D = (error - self.previousError) / stepTime * self.kd
 
 
-			correction = self.P + self.I + self.D
+			self.correction = self.P + self.I + self.D
 			self.previousTime = currentTime
 			self.previousError = error
-			#since W is an integer, correction is rounded
-			correction = round(correction)
+			#since W is an integer, self.correction is rounded
+			self.correction = round(self.correction)
 
-			if correction>self.maxCorr:
-				correction=self.maxCorr
-			if correction<-self.maxCorr:
-				correction=-self.maxCorr
-			return correction
+			if self.correction>self.maxCorr:
+				self.correction=self.maxCorr
+			if self.correction<-self.maxCorr:
+				self.correction=-self.maxCorr
+			return self.correction

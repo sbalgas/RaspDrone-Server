@@ -22,7 +22,8 @@ class mpu(threading.Thread):
 			self.IMU.readOffsets('IMU_offset.txt')
 
 			self.simulation = False;
-		except ImportError:
+		except ImportError as error:
+			print error;
 			print 'Simulating IMU '
 			self.simulation = True
 		
@@ -58,6 +59,8 @@ class mpu(threading.Thread):
 			tottime=time()-inittime
 			steptime=tottime-tottime_old
 			sleep(0.01)
+			#sleep(0.1)
+			#sleep(0.5)
 			self.update(steptime)
 			#print self.getDataString(tottime,steptime)
 			if self.savelog is True:

@@ -65,11 +65,10 @@ class wifi():
 			return
 
 		data = json.dumps(data);
-		#print data;
 		if data is None:
 			return
 		try:
-			self.client.send(data);
+			self.client.send(data + "\0");
 		except Exception as e:
 			print e
 		return

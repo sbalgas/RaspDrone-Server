@@ -17,10 +17,10 @@ class quadcopter():
 		kpStable = 1;
 		kiStable = 0;
 		kdStable = 0;
-		kp = 3;
+		kp = 1;
 		ki = 0;
 		kd = 0;
-		kp_yaw = 5;
+		kp_yaw = 3;
 		ki_yaw = 0;
 		kd_yaw = 0;
 
@@ -37,7 +37,7 @@ class quadcopter():
 		self.pidPitchStable = pid("pidPitchStable", kpStable, kiStable, kdStable)
 		self.pidRoll 		= pid("pidRoll", kp, ki, kd)
 		self.pidPitch 		= pid("pidPitch", kp, ki, kd)
-		self.pidYaw 		= pid("pidYaw", kp_yaw, ki_yaw, kd_yaw)
+		self.pidYaw 		= pid("pidYaw", kp_yaw, ki_yaw, kd_yaw, 20)
 		
 		t1 = threading.Thread(target = self.startMPU);
 		t1.daemon = True;
@@ -47,52 +47,63 @@ class quadcopter():
 		self.wifi.startSocket()
 		
 	def mpuUpdated(self, rollAcc, pitchAcc, yawAcc, roll, pitch, yaw):
-		pidRoll		= self.pidRollStable.calc(self.control.getRoll() - rollAcc);
-		pidPitch	= self.pidPitchStable.calc(self.control.getPitch() - pitchAcc);
+		#TODO: intercambiar entre acro y estable
+		pidRoll		= roll;
+		pidPitch	= pitch;
+		#pidRoll		= self.pidRollStable.calc(self.control.getRoll() - rollAcc);
+		#pidPitch	= self.pidPitchStable.calc(self.control.getPitch() - pitchAcc);
 
-		pidRoll 	= self.pidRoll.calc(roll - pidRoll);
-		pidPitch 	= self.pidPitch.calc(pitch - pidPitch);
+		pidRoll		= self.pidRoll.calc(roll - self.control.getRoll());
+		pidPitch	= self.pidPitch.calc(pitch - self.control.getPitch());
 		pidYaw		= self.pidYaw.calc(yaw - self.control.getYaw());
 
-		if self.motor_controller.isPowered():
-			self.setControl(pidRoll, pidPitch, pidYaw);
-
 		objectToSend = { 
-			'MotorFL': self.motorFL_val,
-			'MotorFR': self.motorFR_val,
-			'MotorBL': self.motorBL_val,
-			'MotorBR': self.motorBR_val,
-			'Yaw'	 : yaw,
-			'Pitch'	 : pitch,
-			'Roll'	 : roll
+			'MotorFL'		: int(self.motorFL_val),
+			'MotorFR'		: int(self.motorFR_val),
+			'MotorBL'		: int(self.motorBL_val),
+			'MotorBR'		: int(self.motorBR_val),
+			'Yaw'			: int(yaw),
+			'Pitch'			: int(pitch),
+			'Roll'			: int(roll),
+			'PidRollError'	: float(roll - self.control.getRoll()),
+			'PidPitchError'	: float(pitch - self.control.getPitch()),
+			'PidYawError'	: float(yaw - self.control.getYaw())
 		};
 
 		self.wifi.sendData(objectToSend);
 
-	def callbackReceivedData(self, axis):
 		if self.motor_controller.isPowered():
-			self.control.setThrottle(axis['Throttle']);
-			self.control.setYaw(axis['Yaw']);
-			self.control.setRoll(axis['Roll']);
-			self.control.setPitch(axis['Pitch']);
-			if axis['Throttle'] < 1050 and axis['Yaw'] > 1950:
+			self.setControl(pidRoll, pidPitch, pidYaw);
+
+	def callbackReceivedData(self, data):
+		if self.motor_controller.isPowered():
+			self.control.setThrottle(data['Throttle']);
+			self.control.setYaw(data['Yaw']);
+			self.control.setRoll(data['Roll']);
+			self.control.setPitch(data['Pitch']);
+			if data['Throttle'] < 1050 and data['Yaw'] > 1950:
 				self.motor_controller.stop();	
-		elif axis['Throttle'] < 1050 and axis['Yaw'] < 1050:
+		elif data['Throttle'] < 1050 and data['Yaw'] < 1050:
 			self.motor_controller.start();
 
 
 	def setControl(self, roll, pitch, yaw):
 
-		self.motorFL_val = constrain(self.control.getThrottle() - roll - pitch + yaw, 1200, 2000);
-		self.motorBL_val = constrain(self.control.getThrottle() - roll + pitch - yaw, 1200, 2000);
-		self.motorFR_val = constrain(self.control.getThrottle() + roll - pitch - yaw, 1200, 2000);
-		self.motorBR_val = constrain(self.control.getThrottle() + roll + pitch + yaw, 1200, 2000);
+		#self.motorFL_val = constrain(self.control.getThrottle() - roll - pitch + yaw, 1200, 2000);
+		#self.motorBL_val = constrain(self.control.getThrottle() - roll + pitch - yaw, 1200, 2000);
+		#self.motorFR_val = constrain(self.control.getThrottle() + roll - pitch - yaw, 1200, 2000);
+		#self.motorBR_val = constrain(self.control.getThrottle() + roll + pitch + yaw, 1200, 2000);
+
+		self.motorFL_val = constrain(self.control.getThrottle() - yaw, 1200, 2000);
+		self.motorBL_val = constrain(self.control.getThrottle() + yaw, 1200, 2000);
+		self.motorFR_val = constrain(self.control.getThrottle() + yaw, 1200, 2000);
+		self.motorBR_val = constrain(self.control.getThrottle() - yaw, 1200, 2000);
 		
-		self.motor_controller.setW_FR(self.motorFR_val);
 		self.motor_controller.setW_FL(self.motorFL_val);
+		self.motor_controller.setW_FR(self.motorFR_val);
 		self.motor_controller.setW_BL(self.motorBL_val);
 		self.motor_controller.setW_BR(self.motorBR_val);
-		print "-----------------";
+		#print "-----------------";
 
 	def startMPU(self):
 		self.mpu = mpu()
