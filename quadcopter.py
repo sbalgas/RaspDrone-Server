@@ -47,6 +47,7 @@ class quadcopter():
 		self.wifi.startSocket()
 		
 	def mpuUpdated(self, rollAcc, pitchAcc, yawAcc, roll, pitch, yaw):
+		yaw = yaw *-1;
 		#TODO: intercambiar entre acro y estable
 		pidRoll		= roll;
 		pidPitch	= pitch;
@@ -65,9 +66,9 @@ class quadcopter():
 			'Yaw'			: int(yaw),
 			'Pitch'			: int(pitch),
 			'Roll'			: int(roll),
-			'PidRollError'	: float(roll - self.control.getRoll()),
-			'PidPitchError'	: float(pitch - self.control.getPitch()),
-			'PidYawError'	: float(yaw - self.control.getYaw())
+			'PidRollError'	: float(self.control.getRoll()),
+			'PidPitchError'	: float(self.control.getPitch()),
+			'PidYawError'	: float(self.control.getYaw())
 		};
 
 		self.wifi.sendData(objectToSend);
@@ -76,6 +77,31 @@ class quadcopter():
 			self.setControl(pidRoll, pidPitch, pidYaw);
 
 	def callbackReceivedData(self, data):
+		if (data['PIDMode'] > 0):
+			print data['PIDMode'];
+			if (data['PIDMode'] == 11 ): # P
+				self.pidRoll.setKp(data['PIDValue']);
+			if (data['PIDMode'] == 12 ): 
+				self.pidPitch.setKp(data['PIDValue']);
+			if (data['PIDMode'] == 13 ): 
+				self.pidYaw.setKp(data['PIDValue']);
+
+			if (data['PIDMode'] == 21 ): # I
+				self.pidRoll.setKi(data['PIDValue']);
+			if (data['PIDMode'] == 22 ): 
+				self.pidPitch.setKi(data['PIDValue']);
+			if (data['PIDMode'] == 23 ): 
+				self.pidYaw.setKi(data['PIDValue']);
+
+			if (data['PIDMode'] == 31 ): # D
+				self.pidRoll.setKd(data['PIDValue']);
+			if (data['PIDMode'] == 32 ): 
+				self.pidPitch.setKd(data['PIDValue']);
+			if (data['PIDMode'] == 33 ): 
+				self.pidYaw.setKd(data['PIDValue']);
+
+			return;
+
 		if self.motor_controller.isPowered():
 			self.control.setThrottle(data['Throttle']);
 			self.control.setYaw(data['Yaw']);
@@ -94,10 +120,10 @@ class quadcopter():
 		#self.motorFR_val = constrain(self.control.getThrottle() + roll - pitch - yaw, 1200, 2000);
 		#self.motorBR_val = constrain(self.control.getThrottle() + roll + pitch + yaw, 1200, 2000);
 
-		self.motorFL_val = constrain(self.control.getThrottle() - yaw, 1200, 2000);
-		self.motorBL_val = constrain(self.control.getThrottle() + yaw, 1200, 2000);
-		self.motorFR_val = constrain(self.control.getThrottle() + yaw, 1200, 2000);
-		self.motorBR_val = constrain(self.control.getThrottle() - yaw, 1200, 2000);
+		self.motorFL_val = constrain(self.control.getThrottle() + yaw, 1200, 2000);
+		self.motorBL_val = constrain(self.control.getThrottle() - yaw, 1200, 2000);
+		self.motorFR_val = constrain(self.control.getThrottle() - yaw, 1200, 2000);
+		self.motorBR_val = constrain(self.control.getThrottle() + yaw, 1200, 2000);
 		
 		self.motor_controller.setW_FL(self.motorFL_val);
 		self.motor_controller.setW_FR(self.motorFR_val);
