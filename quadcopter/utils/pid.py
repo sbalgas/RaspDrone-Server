@@ -21,6 +21,24 @@ class pid():
 	def getPid(self):
 		return {'P' : self.P, 'I' : self.I, 'D' : self.D};
 
+	def setKp(self, kp):
+		self.kp = kp;
+
+	def setKi(self, ki):
+		self.ki = ki;
+
+	def setKd(self, kd):
+		self.kd = kd;
+
+	def getKp(self):
+		return self.kp;
+
+	def getKi(self):
+		return self.ki;
+
+	def getKd(self):
+		return self.kd;
+
 	def calc(self, error):
 		if self.init:
 			self.previousTime = time()
