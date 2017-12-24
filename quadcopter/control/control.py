@@ -52,8 +52,8 @@ class control(object):
 			if (self.yaw > (1500+self.deadZone)):
 				self.currentYaw += (self.yaw - (1500+self.deadZone))/self.sensitivity;
 			elif (self.yaw < (1500-self.deadZone)):
-				self.currentYaw -= (self.yaw - (1500-self.deadZone))/self.sensitivity;
-		
+				self.currentYaw += (self.yaw - (1500-self.deadZone))/self.sensitivity;
+
 		return self.currentYaw;
 
 	def setThrottle(self, qty = 1000):
