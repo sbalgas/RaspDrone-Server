@@ -89,7 +89,7 @@ class mpu(threading.Thread):
 		if self.simulation == False:
 			self.x_acc, self.y_acc, self.z_acc, self.r_rate, self.p_rate, self.y_rate= self.IMU.readSensors()
 		self.getAngleCompl(dt)
-		self.callbackUpdate(self.x_acc, self.y_acc, self.z_acc, self.roll, self.pitch, self.yaw)
+		self.callbackUpdate(self.x_acc, self.y_acc, self.z_acc, self.roll, self.pitch, self.yaw*-1)
 
 
 	def getDataString(self,data1='',data2=''):
