@@ -21,7 +21,7 @@ class control(object):
 		self.minYaw = 1000;
 		self.maxYaw = 2000;
 
-		self.sensitivity = 3;
+		self.sensitivity = 8;
 		self.deadZone = 13;
 
 	def getThrottle(self):
