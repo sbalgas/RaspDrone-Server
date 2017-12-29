@@ -24,6 +24,8 @@ class quadcopter():
 		ki_yaw = 0.5;
 		kd_yaw = 2;
 
+		self.RollPitchLimitAngle = 35;
+
 		self.motorFL_val = 0;
 		self.motorFR_val = 0;
 		self.motorBL_val = 0;
@@ -35,9 +37,9 @@ class quadcopter():
 		
 		self.pidRollStable 	= pid("pidRollStable", kpStable, kiStable, kdStable)
 		self.pidPitchStable = pid("pidPitchStable", kpStable, kiStable, kdStable)
-		self.pidRoll 		= pid("pidRoll", kp, ki, kd, 20)
-		self.pidPitch 		= pid("pidPitch", kp, ki, kd, 20)
-		self.pidYaw 		= pid("pidYaw", kp_yaw, ki_yaw, kd_yaw, 20)
+		self.pidRoll 		= pid("pidRoll", kp, ki, kd, 30)
+		self.pidPitch 		= pid("pidPitch", kp, ki, kd, 30)
+		self.pidYaw 		= pid("pidYaw", kp_yaw, ki_yaw, kd_yaw, 30)
 		
 		t1 = threading.Thread(target = self.startMPU);
 		t1.daemon = True;
@@ -51,8 +53,12 @@ class quadcopter():
 		#pidRoll	= self.pidRollStable.calc(self.control.getRoll() - rollAcc);
 		#pidPitch	= self.pidPitchStable.calc(self.control.getPitch() - pitchAcc);
 
-		pidRoll		= self.pidRoll.calc(roll - self.control.getRoll());
-		pidPitch	= self.pidPitch.calc(pitch - self.control.getPitch());
+		errorRoll = constrain(roll - self.control.getRoll(), self.RollPitchLimitAngle*-1, self.RollPitchLimitAngle);
+		errorPith = constrain(pitch - self.control.getPitch(), self.RollPitchLimitAngle*-1, self.RollPitchLimitAngle);
+
+
+		pidRoll		= self.pidRoll.calc(errorRoll);
+		pidPitch	= self.pidPitch.calc(errorPith);
 		pidYaw		= self.pidYaw.calc(yaw - self.control.getYaw());
 
 		objectToSend = { 
@@ -76,23 +82,23 @@ class quadcopter():
 	def callbackReceivedData(self, data):
 		if (data['PIDMode'] > 0):
 			print data['PIDMode'];
-			if (data['PIDMode'] == 11 ): # P
+			if (data['PIDMode'] == 11 or data['PIDMode'] == 12): # P
 				self.pidRoll.setKp(data['PIDValue']);
-			if (data['PIDMode'] == 12 ): 
+			#if (data['PIDMode'] == 12 ): 
 				self.pidPitch.setKp(data['PIDValue']);
 			if (data['PIDMode'] == 13 ): 
 				self.pidYaw.setKp(data['PIDValue']);
 
-			if (data['PIDMode'] == 21 ): # I
+			if (data['PIDMode'] == 21 or data['PIDMode'] == 22): # I
 				self.pidRoll.setKi(data['PIDValue']);
-			if (data['PIDMode'] == 22 ): 
+			#if (data['PIDMode'] == 22 ): 
 				self.pidPitch.setKi(data['PIDValue']);
 			if (data['PIDMode'] == 23 ): 
 				self.pidYaw.setKi(data['PIDValue']);
 
-			if (data['PIDMode'] == 31 ): # D
+			if (data['PIDMode'] == 31 or data['PIDMode'] == 32): # D
 				self.pidRoll.setKd(data['PIDValue']);
-			if (data['PIDMode'] == 32 ): 
+			#if (data['PIDMode'] == 32 ): 
 				self.pidPitch.setKd(data['PIDValue']);
 			if (data['PIDMode'] == 33 ): 
 				self.pidYaw.setKd(data['PIDValue']);
@@ -115,7 +121,7 @@ class quadcopter():
 		self.motorBL_val = constrain(self.control.getThrottle() - roll + pitch - yaw, 1200, 2000);
 		self.motorFR_val = constrain(self.control.getThrottle() + roll - pitch - yaw, 1200, 2000);
 		self.motorBR_val = constrain(self.control.getThrottle() + roll + pitch + yaw, 1200, 2000);
-	
+
 		self.motor_controller.setW_FL(self.motorFL_val);
 		self.motor_controller.setW_FR(self.motorFR_val);
 		self.motor_controller.setW_BL(self.motorBL_val);
