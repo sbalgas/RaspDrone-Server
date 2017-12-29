@@ -4,10 +4,10 @@ from motor import motor
 class motor_control():
 	
 	def __init__(self, start = False, debug = False):
-		self.motorFR = motor('motorFR', 18, simulation=False);
-		self.motorFL = motor('motorFL', 24, simulation=False);
-		self.motorBL = motor('motorBL', 17, simulation=False);
-		self.motorBR = motor('motorBR', 7, simulation=False);
+		self.motorBL = motor('motorFR', 18, simulation=False); 
+		self.motorBR = motor('motorBR', 24, simulation=False); # horario ok
+		self.motorFR = motor('motorBL', 17, simulation=False); 
+		self.motorFL = motor('motorBR', 7, simulation=False); # horario ok
 
 		self.powered = False;
 
@@ -30,8 +30,8 @@ class motor_control():
 		self.powered = False;
 		self.motorFR.stop();
 		self.motorFL.stop();
-		self.motorBL.stop();
 		self.motorBR.stop();
+		self.motorBL.stop();
 
 	def setW_FR (self, w):
 		#print "motorFR: ", int(w); 

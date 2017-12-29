@@ -18,6 +18,27 @@ class pid():
 	def getName(self):
 		return self.name;
 
+	def getPid(self):
+		return {'P' : self.P, 'I' : self.I, 'D' : self.D};
+
+	def setKp(self, kp):
+		self.kp = kp;
+
+	def setKi(self, ki):
+		self.ki = ki;
+
+	def setKd(self, kd):
+		self.kd = kd;
+
+	def getKp(self):
+		return self.kp;
+
+	def getKi(self):
+		return self.ki;
+
+	def getKd(self):
+		return self.kd;
+
 	def calc(self, error):
 		if self.init:
 			self.previousTime = time()
@@ -33,14 +54,14 @@ class pid():
 			self.D = (error - self.previousError) / stepTime * self.kd
 
 
-			correction = self.P + self.I + self.D
+			self.correction = self.P + self.I + self.D
 			self.previousTime = currentTime
 			self.previousError = error
-			#since W is an integer, correction is rounded
-			correction = round(correction)
+			#since W is an integer, self.correction is rounded
+			self.correction = round(self.correction)
 
-			if correction>self.maxCorr:
-				correction=self.maxCorr
-			if correction<-self.maxCorr:
-				correction=-self.maxCorr
-			return correction
+			if self.correction>self.maxCorr:
+				self.correction=self.maxCorr
+			if self.correction<-self.maxCorr:
+				self.correction=-self.maxCorr
+			return self.correction
