@@ -7,6 +7,7 @@ from quadcopter.control.control import control
 from quadcopter.motor.motor_control import motor_control
 from quadcopter.utils.pid import pid
 from quadcopter.utils.functions import map, constrain
+from quadcopter.utils.setting import setting
 from quadcopter.network.wifi import wifi
 from time import sleep
 
@@ -17,14 +18,6 @@ class quadcopter():
 		kpStable = 1;
 		kiStable = 0;
 		kdStable = 0;
-		kp = 5;
-		ki = 0.5;
-		kd = 2	;
-		kp_yaw = 5;
-		ki_yaw = 0.5;
-		kd_yaw = 2;
-
-		self.RollPitchLimitAngle = 35;
 
 		self.motorFL_val = 0;
 		self.motorFR_val = 0;
@@ -37,9 +30,18 @@ class quadcopter():
 		
 		self.pidRollStable 	= pid("pidRollStable", kpStable, kiStable, kdStable)
 		self.pidPitchStable = pid("pidPitchStable", kpStable, kiStable, kdStable)
-		self.pidRoll 		= pid("pidRoll", kp, ki, kd, 30)
-		self.pidPitch 		= pid("pidPitch", kp, ki, kd, 30)
-		self.pidYaw 		= pid("pidYaw", kp_yaw, ki_yaw, kd_yaw, 30)
+
+		conf = setting();
+
+		self.RollPitchLimitAngle = conf.getRollPitchLimitAngle();
+
+		kpRoll, kiRoll, kdRoll = conf.getPIDRoll();
+		kpPitch, kiPitch, kdPitch = conf.getPIDPitch();
+		kpYaw, kiYaw, kdYaw = conf.getPIDYaw();
+
+		self.pidRoll 		= pid("pidRoll", kpRoll, kiRoll, kdRoll, 30)
+		self.pidPitch 		= pid("pidPitch", kpPitch, kiPitch, kdPitch, 30)
+		self.pidYaw 		= pid("pidYaw", kpYaw, kiYaw, kdYaw, 30)
 		
 		t1 = threading.Thread(target = self.startMPU);
 		t1.daemon = True;
@@ -47,7 +49,7 @@ class quadcopter():
 
 		self.wifi.setCallbackReceivedFata(self.callbackReceivedData);
 		self.wifi.startSocket()
-		
+	
 	def mpuUpdated(self, rollAcc, pitchAcc, yawAcc, roll, pitch, yaw):
 
 		#pidRoll	= self.pidRollStable.calc(self.control.getRoll() - rollAcc);
@@ -116,6 +118,12 @@ class quadcopter():
 			self.pidPitch.setKd(data['PIDValue']);
 		elif (data['PIDMode'] == 33 ): 
 			self.pidYaw.setKd(data['PIDValue']);
+
+		elif (data['PIDMode'] == 4): # save
+			conf = setting();
+			conf.setPIDRoll(self.pidRoll.getKp(), self.pidRoll.getKi(), self.pidRoll.getKd());
+			conf.setPIDPitch(self.pidPitch.getKp(), self.pidPitch.getKi(), self.pidPitch.getKd());
+			conf.setPIDYaw(self.pidYaw.getKp(), self.pidYaw.getKi(), self.pidYaw.getKd());
 
 		else:
 			if (data['PIDMode'] == 1):
