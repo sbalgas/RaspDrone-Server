@@ -79,7 +79,7 @@ class wifi():
 
 		for onejSON in jSON.split("-"):
 			try:
-				axis = json.loads(onejSON);
+				data = json.loads(onejSON);
 			except Exception as e:
 				print "original JSON ", jSON;
 				print "Json Error in ", onejSON;
@@ -87,4 +87,4 @@ class wifi():
 				continue;
 				
 			if self.callbackReceivedData is not None:
-				self.callbackReceivedData(axis);
+				self.callbackReceivedData(data);

@@ -35,13 +35,13 @@ class quadcopter():
 
 		self.RollPitchLimitAngle = conf.getRollPitchLimitAngle();
 
-		kpRoll, kiRoll, kdRoll = conf.getPIDRoll();
-		kpPitch, kiPitch, kdPitch = conf.getPIDPitch();
-		kpYaw, kiYaw, kdYaw = conf.getPIDYaw();
+		kpRoll, kiRoll, kdRoll, maxCorrRoll = conf.getPIDRoll();
+		kpPitch, kiPitch, kdPitch, maxCorrPitch = conf.getPIDPitch();
+		kpYaw, kiYaw, kdYaw, maxCorrYaw = conf.getPIDYaw();
 
-		self.pidRoll 		= pid("pidRoll", kpRoll, kiRoll, kdRoll, 30)
-		self.pidPitch 		= pid("pidPitch", kpPitch, kiPitch, kdPitch, 30)
-		self.pidYaw 		= pid("pidYaw", kpYaw, kiYaw, kdYaw, 30)
+		self.pidRoll 		= pid("pidRoll", kpRoll, kiRoll, kdRoll, maxCorrRoll)
+		self.pidPitch 		= pid("pidPitch", kpPitch, kiPitch, kdPitch, maxCorrPitch)
+		self.pidYaw 		= pid("pidYaw", kpYaw, kiYaw, kdYaw, maxCorrYaw)
 		
 		t1 = threading.Thread(target = self.startMPU);
 		t1.daemon = True;
