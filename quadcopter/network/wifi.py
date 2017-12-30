@@ -81,6 +81,7 @@ class wifi():
 			try:
 				axis = json.loads(onejSON);
 			except Exception as e:
+				print "original JSON ", jSON;
 				print "Json Error in ", onejSON;
 				print e;
 				continue;
