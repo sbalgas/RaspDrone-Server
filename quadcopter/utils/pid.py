@@ -56,15 +56,12 @@ class pid():
 			self.I += (error * stepTime) * self.ki
 			self.D = (error - self.previousError) / stepTime * self.kd
 
-
 			self.correction = self.P + self.I + self.D
 			self.previousTime = currentTime
 			self.previousError = error
-			#since W is an integer, self.correction is rounded
-			self.correction = round(self.correction)
 
 			if self.correction>self.maxCorr:
 				self.correction=self.maxCorr
 			if self.correction<-self.maxCorr:
 				self.correction=-self.maxCorr
-			return self.correction
+			return round(self.correction)
