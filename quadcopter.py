@@ -81,28 +81,7 @@ class quadcopter():
 
 	def callbackReceivedData(self, data):
 		if (data['PIDMode'] > 0):
-			print data['PIDMode'];
-			if (data['PIDMode'] == 11 or data['PIDMode'] == 12): # P
-				self.pidRoll.setKp(data['PIDValue']);
-			#if (data['PIDMode'] == 12 ): 
-				self.pidPitch.setKp(data['PIDValue']);
-			if (data['PIDMode'] == 13 ): 
-				self.pidYaw.setKp(data['PIDValue']);
-
-			if (data['PIDMode'] == 21 or data['PIDMode'] == 22): # I
-				self.pidRoll.setKi(data['PIDValue']);
-			#if (data['PIDMode'] == 22 ): 
-				self.pidPitch.setKi(data['PIDValue']);
-			if (data['PIDMode'] == 23 ): 
-				self.pidYaw.setKi(data['PIDValue']);
-
-			if (data['PIDMode'] == 31 or data['PIDMode'] == 32): # D
-				self.pidRoll.setKd(data['PIDValue']);
-			#if (data['PIDMode'] == 32 ): 
-				self.pidPitch.setKd(data['PIDValue']);
-			if (data['PIDMode'] == 33 ): 
-				self.pidYaw.setKd(data['PIDValue']);
-
+			self.pidReceivedData(data);
 			return;
 
 		if self.motor_controller.isPowered():
@@ -114,6 +93,45 @@ class quadcopter():
 				self.motor_controller.stop();	
 		elif data['Throttle'] < 1050 and data['Yaw'] < 1050:
 			self.motor_controller.start();
+
+	def pidReceivedData(self, data):
+
+		if (data['PIDMode'] == 11): # P
+			self.pidRoll.setKp(data['PIDValue']);
+		elif (data['PIDMode'] == 12 ): 
+			self.pidPitch.setKp(data['PIDValue']);
+		elif (data['PIDMode'] == 13 ): 
+			self.pidYaw.setKp(data['PIDValue']);
+
+		elif (data['PIDMode'] == 21): # I
+			self.pidRoll.setKi(data['PIDValue']);
+		elif (data['PIDMode'] == 22 ): 
+			self.pidPitch.setKi(data['PIDValue']);
+		elif (data['PIDMode'] == 23 ): 
+			self.pidYaw.setKi(data['PIDValue']);
+
+		elif (data['PIDMode'] == 31): # D
+			self.pidRoll.setKd(data['PIDValue']);
+		elif (data['PIDMode'] == 32 ): 
+			self.pidPitch.setKd(data['PIDValue']);
+		elif (data['PIDMode'] == 33 ): 
+			self.pidYaw.setKd(data['PIDValue']);
+
+		else:
+			if (data['PIDMode'] == 1):
+				objectToSend = {
+				'type'		: 'Roll',
+				'KPID'	: self.pidRoll.getKPID()};
+			elif (data['PIDMode'] == 2):
+				objectToSend = {
+				'type'		: 'Pitch',
+				'KPID'	: self.pidPitch.getKPID()};
+			elif (data['PIDMode'] == 3):
+				objectToSend = {
+				'type'		: 'Yaw',
+				'KPID'	: self.pidYaw.getKPID()};
+
+			self.wifi.sendData(objectToSend);		
 
 
 	def setControl(self, roll, pitch, yaw):

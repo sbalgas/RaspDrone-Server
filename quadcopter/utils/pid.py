@@ -18,8 +18,11 @@ class pid():
 	def getName(self):
 		return self.name;
 
-	def getPid(self):
+	def getPID(self):
 		return {'P' : self.P, 'I' : self.I, 'D' : self.D};
+
+	def getKPID(self):
+		return {'P' : self.kp, 'I' : self.ki, 'D' : self.kd};
 
 	def setKp(self, kp):
 		self.kp = kp;
