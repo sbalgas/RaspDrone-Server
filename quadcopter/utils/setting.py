@@ -29,16 +29,16 @@ class setting():
 		self.save();
 
 	def getPIDRoll(self):
-		return config.getfloat('PIDRoll', 'P'), config.getfloat('PIDRoll', 'I'), config.getfloat('PIDRoll', 'D'), config.getfloat('PIDRoll', 'MaxCorrection');
+		return self.config.getfloat('PIDRoll', 'P'), self.config.getfloat('PIDRoll', 'I'), self.config.getfloat('PIDRoll', 'D'), self.config.getfloat('PIDRoll', 'MaxCorrection');
 
 	def getPIDPitch(self):
-		return config.getfloat('PIDPitch', 'P'), config.getfloat('PIDPitch', 'I'), config.getfloat('PIDPitch', 'D'), config.getfloat('PIDPitch', 'MaxCorrection');
+		return self.config.getfloat('PIDPitch', 'P'), self.config.getfloat('PIDPitch', 'I'), self.config.getfloat('PIDPitch', 'D'), self.config.getfloat('PIDPitch', 'MaxCorrection');
 
 	def getPIDYaw(self):
-		return config.getfloat('PIDYaw', 'P'), config.getfloat('PIDYaw', 'I'), config.getfloat('PIDYaw', 'D'), config.getfloat('PIDYaw', 'MaxCorrection');
+		return self.config.getfloat('PIDYaw', 'P'), self.config.getfloat('PIDYaw', 'I'), self.config.getfloat('PIDYaw', 'D'), self.config.getfloat('PIDYaw', 'MaxCorrection');
 
 	def getRollPitchLimitAngle(self):
-		return config.getfloat('LimitAngle', 'RollPitch');
+		return self.config.getfloat('LimitAngle', 'RollPitch');
 
 
 	def save(self):
