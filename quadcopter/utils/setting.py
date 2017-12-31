@@ -28,6 +28,12 @@ class setting():
 		self.config.set('PIDYaw', 'D', str(d));
 		self.save();
 
+	def setGyroError(self, roll, pitch):
+		self.config.add_section('GyroError');
+		self.config.set('GyroError', 'Roll', str(roll));
+		self.config.set('GyroError', 'Pitch', str(pitch));
+		self.save();
+
 	def getPIDRoll(self):
 		return self.config.getfloat('PIDRoll', 'P'), self.config.getfloat('PIDRoll', 'I'), self.config.getfloat('PIDRoll', 'D'), self.config.getfloat('PIDRoll', 'MaxCorrection');
 
@@ -40,6 +46,8 @@ class setting():
 	def getRollPitchLimitAngle(self):
 		return self.config.getfloat('LimitAngle', 'RollPitch');
 
+	def getGyroError(self):
+		return self.config.getfloat('GyroError', 'Roll'), self.config.getfloat('GyroError', 'Pitch');
 
 	def save(self):
 		with open('config.ini', 'w') as f:

@@ -5,7 +5,7 @@ import threading
 
 class mpu(threading.Thread):
 
-	def __init__(self,address=0x68,updateoffset=True, cycletime=0.01, savelog=False):
+	def __init__(self,address=0x68,updateoffset=True, cycletime=0.01, errorRoll=0, errorPitch=0, savelog=False):
 
 		threading.Thread.__init__(self)
 
@@ -36,6 +36,8 @@ class mpu(threading.Thread):
 		self.r_rate=0
 		self.p_rate=0
 		self.y_rate=0
+		self.errorRoll=errorRoll
+		self.errorPitch=errorPitch
 		self.cycling=True
 		self.cycletime=cycletime
 		self.savelog = savelog
@@ -89,7 +91,7 @@ class mpu(threading.Thread):
 		if self.simulation == False:
 			self.x_acc, self.y_acc, self.z_acc, self.r_rate, self.p_rate, self.y_rate= self.IMU.readSensors()
 		self.getAngleCompl(dt)
-		self.callbackUpdate(self.x_acc, self.y_acc, self.z_acc, self.roll, self.pitch, self.yaw*-1)
+		self.callbackUpdate(self.x_acc, self.y_acc, self.z_acc, self.roll - self.errorRoll, self.pitch - self.errorPitch, self.yaw*-1)
 
 
 	def getDataString(self,data1='',data2=''):
@@ -122,6 +124,13 @@ class mpu(threading.Thread):
 		y=0
 
 		return r,p,y
+
+	def calibrate(self):
+		self.errorRoll = self.roll;
+		self.errorPitch = self.pitch;
+
+	def getGyroError(self):
+		return self.errorRoll, self.errorPitch;		
 
 	def getAngleCompl(self,dt):
 		"return the angle calculated applying the complementary filter."

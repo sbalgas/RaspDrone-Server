@@ -82,9 +82,17 @@ class quadcopter():
 			self.setControl(pidRoll, pidPitch, pidYaw);
 
 	def callbackReceivedData(self, data):
+		if 'Order' in data:
+			if data['Order'] == 'CALIBRATE_MPU':
+				self.mpu.calibrate();
+				conf = setting();
+				rollError, pitchError = self.mpu.getGyroError();
+				conf.setGyroError(rollError, pitchError);
+			return;
+
 		if (data['PIDMode'] > 0):
 			self.pidReceivedData(data);
-			return;
+			return;	
 
 		if self.motor_controller.isPowered():
 			self.control.setThrottle(data['Throttle']);
@@ -154,7 +162,10 @@ class quadcopter():
 		self.motor_controller.setW_BR(self.motorBR_val);
 
 	def startMPU(self):
-		self.mpu = mpu()
+		conf = setting();
+		Roll, Pitch = conf.getGyroError();
+		
+		self.mpu = mpu(updateoffset=False, errorRoll = Roll, errorPitch = Pitch);
 		self.mpu.setCallbackUpdate(self.mpuUpdated)
 		self.mpu.run()
 
