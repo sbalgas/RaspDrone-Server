@@ -29,7 +29,7 @@ class setting():
 		self.save();
 
 	def setGyroError(self, roll, pitch):
-		self.config.add_section('GyroError');
+		#self.config.add_section('GyroError');
 		self.config.set('GyroError', 'Roll', str(roll));
 		self.config.set('GyroError', 'Pitch', str(pitch));
 		self.save();
