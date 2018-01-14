@@ -6,7 +6,7 @@ class pid():
 		self.kp = kp
 		self.ki = ki
 		self.kd = kd
-		self.P =0
+		self.P = 0
 		self.I = 0
 		self.D = 0
 		self.previousTime = 0.0
@@ -44,7 +44,7 @@ class pid():
 
 	def calc(self, error):
 		if self.init:
-			self.previousTime = time()
+			self.reset();
 			self.init=False
 			print "Initializing ", self.name;
 			return 0
@@ -65,3 +65,9 @@ class pid():
 			if self.correction<-self.maxCorr:
 				self.correction=-self.maxCorr
 			return round(self.correction)
+
+	def reset(self):
+		self.P = 0
+		self.I = 0
+		self.D = 0
+		self.previousTime = time()
