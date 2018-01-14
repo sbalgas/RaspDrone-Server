@@ -57,11 +57,13 @@ class quadcopter():
 
 		errorRoll = constrain(roll - self.control.getRoll(), self.RollPitchLimitAngle*-1, self.RollPitchLimitAngle);
 		errorPith = constrain(pitch - self.control.getPitch(), self.RollPitchLimitAngle*-1, self.RollPitchLimitAngle);
-
-
+		
 		pidRoll		= self.pidRoll.calc(errorRoll);
 		pidPitch	= self.pidPitch.calc(errorPith);
 		pidYaw		= self.pidYaw.calc(yaw - self.control.getYaw());
+
+		if self.motor_controller.isPowered():
+			self.setControl(pidRoll, pidPitch, pidYaw);
 
 		objectToSend = { 
 			'MotorFL'		: int(self.motorFL_val),
@@ -77,9 +79,6 @@ class quadcopter():
 		};
 
 		self.wifi.sendData(objectToSend);
-
-		if self.motor_controller.isPowered():
-			self.setControl(pidRoll, pidPitch, pidYaw);
 
 	def callbackReceivedData(self, data):
 		if 'Order' in data:
@@ -103,26 +102,29 @@ class quadcopter():
 				self.motor_controller.stop();	
 		elif data['Throttle'] < 1050 and data['Yaw'] < 1050:
 			self.motor_controller.start();
+			self.pidRoll.reset()
+			self.pidPitch.reset()
+			self.pidYaw.reset()
 
 	def pidReceivedData(self, data):
 
-		if (data['PIDMode'] == 11): # P
+		if (data['PIDMode'] == 11 or data['PIDMode'] == 12 ): # P
 			self.pidRoll.setKp(data['PIDValue']);
-		elif (data['PIDMode'] == 12 ): 
+		#elif (data['PIDMode'] == 12 ): 
 			self.pidPitch.setKp(data['PIDValue']);
 		elif (data['PIDMode'] == 13 ): 
 			self.pidYaw.setKp(data['PIDValue']);
 
-		elif (data['PIDMode'] == 21): # I
+		elif (data['PIDMode'] == 21 or data['PIDMode'] == 22 ): # I
 			self.pidRoll.setKi(data['PIDValue']);
-		elif (data['PIDMode'] == 22 ): 
+		#elif (data['PIDMode'] == 22 ): 
 			self.pidPitch.setKi(data['PIDValue']);
 		elif (data['PIDMode'] == 23 ): 
 			self.pidYaw.setKi(data['PIDValue']);
 
-		elif (data['PIDMode'] == 31): # D
+		elif (data['PIDMode'] == 31 or data['PIDMode'] == 32 ): # D
 			self.pidRoll.setKd(data['PIDValue']);
-		elif (data['PIDMode'] == 32 ): 
+		#elif (data['PIDMode'] == 32 ): 
 			self.pidPitch.setKd(data['PIDValue']);
 		elif (data['PIDMode'] == 33 ): 
 			self.pidYaw.setKd(data['PIDValue']);
