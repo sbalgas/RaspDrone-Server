@@ -60,11 +60,9 @@ class mpu(threading.Thread):
 			tottime_old=tottime
 			tottime=time()-inittime
 			steptime=tottime-tottime_old
-			sleep(0.01)
-			#sleep(0.1)
-			#sleep(0.5)
+
 			self.update(steptime)
-			#print self.getDataString(tottime,steptime)
+			
 			if self.savelog is True:
 				self.datalog +=self.getDataString(tottime,steptime)
 
