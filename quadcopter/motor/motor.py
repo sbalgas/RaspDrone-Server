@@ -4,7 +4,7 @@ class motor(object):
 	Implements the IO interface using the RPIO lib
 	__init_(self, name, pin, kv=1000, RPMMin=1, RPMMax=100, debug=True, simulation=True):
 	More info on RPIO in http://pythonhosted.org/RPIO/index.html"""
- 
+
 
 	def __init__(self, name, pin, WMin=1000, WMax=2000, debug=True, simulation=True):
 		self.name = name
@@ -15,18 +15,6 @@ class motor(object):
 		self.setDebug(debug)
 
 		self.__W = self.__WMin
-		self.__Wh = 10
-
-		if not self.simulation:
-			try:
-				from RPIO import PWM
-				self.__IO = PWM.Servo()
-			except ImportError:
-				print "MOTOR ERROR ", self.name;
-				self.simulation = True
-
-		if self.simulation:
-			print "SIMULATION MODE FOR ", self.name
 
 	def setDebug(self, debug):
 		self.__debug = debug
@@ -53,8 +41,12 @@ class motor(object):
 				print "Motor ", self.name, " Started";
 				self.setW(1000)
 			except ImportError:
+				print "MOTOR ERROR ", self.name;
 				self.simulation = True
 				self.powered = False
+
+		if self.simulation:
+			print "SIMULATION MODE FOR ", self.name
 
 	def stop(self):
 		"Stop PWM signal"
@@ -87,7 +79,4 @@ class motor(object):
 		#print self.name, self.__W;
 		if self.powered:
 			self.__IO.set_servo(self.__pin, self.__W)
-
-
-
 
