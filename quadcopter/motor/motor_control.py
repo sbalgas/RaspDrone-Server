@@ -1,5 +1,6 @@
 
 from motor import motor
+from time import sleep
 
 class motor_control():
 	
@@ -23,6 +24,7 @@ class motor_control():
 		self.motorFL.start();
 		self.motorBL.start();
 		self.motorBR.start();
+		sleep(5);
 		self.powered = True;
 
 	def stop(self):
