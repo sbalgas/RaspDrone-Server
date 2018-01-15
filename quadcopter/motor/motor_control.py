@@ -1,5 +1,6 @@
 
-from motor import motor
+#from motor_rpio import motor
+from motor_pigpio import motor
 from time import sleep
 
 class motor_control():
