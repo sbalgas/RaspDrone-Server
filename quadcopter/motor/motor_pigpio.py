@@ -1,10 +1,5 @@
 
 class motor(object):
-	"""Manages the currect Angular rotation
-	Implements the IO interface using the RPIO lib
-	__init_(self, name, pin, kv=1000, RPMMin=1, RPMMax=100, debug=True, simulation=True):
-	More info on RPIO in http://pythonhosted.org/RPIO/index.html"""
-
 
 	def __init__(self, name, pin, WMin=1000, WMax=2000, debug=True, simulation=True):
 		self.name = name
@@ -37,7 +32,7 @@ class motor(object):
 			try:
 				import pigpio
 
-				GPIO.setmode(GPIO.BCM)
+				#GPIO.setmode(GPIO.BCM)
 				
 				self.__IO = pigpio.pi()
 				self.powered = True
@@ -72,7 +67,6 @@ class motor(object):
 	def setW(self, W):
 		"Checks W% is between limits than sets it"
 
-		PW = 0
 		self.__W = int(round(float(W) / 10)) * 10
 		if self.__W < self.__WMin:
 			self.__W = self.__WMin

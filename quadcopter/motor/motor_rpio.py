@@ -69,7 +69,6 @@ class motor(object):
 	def setW(self, W):
 		"Checks W% is between limits than sets it"
 
-		PW = 0
 		self.__W = int(round(float(W) / 10)) * 10
 		if self.__W < self.__WMin:
 			self.__W = self.__WMin
