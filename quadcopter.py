@@ -78,7 +78,7 @@ class quadcopter():
 			'PidYawError'	: float(self.control.getYaw())
 		};
 
-		self.wifi.sendData(objectToSend);
+		self.wifi.sendQuadStatus(objectToSend);
 
 	def callbackReceivedData(self, data):
 		if 'Order' in data:

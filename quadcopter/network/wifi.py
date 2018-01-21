@@ -1,6 +1,7 @@
 import socket
 import threading
 import json
+from time import time
 #import asyncio
 
 class wifi():
@@ -9,6 +10,7 @@ class wifi():
 	def __init__(self):
 		self.client = None;
 		self.callbackReceivedData = None;
+		self.previousTime = 0.0;
 
 	def setCallbackReceivedFata(self, callbackReceivedData):
 		self.callbackReceivedData = callbackReceivedData;
@@ -58,6 +60,12 @@ class wifi():
 		self.client.close()
 		self.client = None;
 		print "exit listen loop"
+
+	def sendQuadStatus(self, data):
+		if (time() - self.previousTime > 0.1):
+			self.sendData(data);
+			self.previousTime = time();
+
 
 	#@asyncio.coroutine
 	def sendData(self, data):
