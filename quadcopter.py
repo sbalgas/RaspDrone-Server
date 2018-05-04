@@ -10,6 +10,7 @@ from quadcopter.utils.functions import map, constrain
 from quadcopter.utils.setting import setting
 from quadcopter.network.wifi import wifi
 from time import sleep
+import sys
 
 class quadcopter():
 
@@ -42,14 +43,14 @@ class quadcopter():
 		self.pidRoll 		= pid("pidRoll", kpRoll, kiRoll, kdRoll, maxCorrRoll)
 		self.pidPitch 		= pid("pidPitch", kpPitch, kiPitch, kdPitch, maxCorrPitch)
 		self.pidYaw 		= pid("pidYaw", kpYaw, kiYaw, kdYaw, maxCorrYaw)
-		
+			
 		t1 = threading.Thread(target = self.startMPU);
 		t1.daemon = True;
 		t1.start();
 
 		self.wifi.setCallbackReceivedFata(self.callbackReceivedData);
 		self.wifi.startSocket()
-	
+
 	def mpuUpdated(self, rollAcc, pitchAcc, yawAcc, roll, pitch, yaw):
 
 		#pidRoll	= self.pidRollStable.calc(self.control.getRoll() - rollAcc);
@@ -167,8 +168,32 @@ class quadcopter():
 		conf = setting();
 		Roll, Pitch = conf.getGyroError();
 		
-		self.mpu = mpu(updateoffset=False, errorRoll = Roll, errorPitch = Pitch);
+		self.mpu = mpu(updateoffset=False, cycletime=0.2, errorRoll = Roll, errorPitch = Pitch);
 		self.mpu.setCallbackUpdate(self.mpuUpdated)
 		self.mpu.run()
 
-quadcopterInstance = quadcopter();
+arguments = sys.argv;
+
+if len(arguments) > 1:
+	if arguments[1] == "--esc-control":
+		print '***Disconnect ESC power'
+		print '***then press ENTER'
+		res = raw_input()
+
+		motor_controller = motor_control();
+		motor_controller.start()
+
+		print '*** Set value between 1000 - 2000'
+		print '*** then press ENTER'
+		res = constrain(int(raw_input()), 1200, 2000);
+		print '*** ', res
+
+		motor_controller.setW_FL(res)
+		motor_controller.setW_FR(res)
+		motor_controller.setW_BL(res)
+		motor_controller.setW_BR(res)
+	else:
+		print 'use ', arguments[0], ' [--esc-control]'
+
+else:
+	quadcopterInstance = quadcopter();
