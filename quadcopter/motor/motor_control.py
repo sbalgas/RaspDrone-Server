@@ -7,9 +7,9 @@ class motor_control():
 	
 	def __init__(self, start = False, debug = False):
 		self.motorBL = motor('motorBL', 18, simulation=False); 
-		self.motorBR = motor('motorBR', 24, simulation=False); # horario ok
-		self.motorFR = motor('motorFR', 17, simulation=False); 
-		self.motorFL = motor('motorFL', 7, simulation=False); # horario ok
+		self.motorBR = motor('motorBR', 13, simulation=False); # horario ok
+		self.motorFR = motor('motorFR', 12, simulation=False); 
+		self.motorFL = motor('motorFL', 19, simulation=False); # horario ok
 
 		self.powered = False;
 
@@ -25,7 +25,16 @@ class motor_control():
 		self.motorFL.start();
 		self.motorBL.start();
 		self.motorBR.start();
-		sleep(5);
+		print "*** Wait 5"
+		sleep(1);
+		print "*** Wait 4"
+		sleep(1);
+		print "*** Wait 3"
+		sleep(1);
+		print "*** Wait 2"
+		sleep(1);
+		print "*** Wait 1"
+		sleep(1);
 		self.powered = True;
 
 	def stop(self):
