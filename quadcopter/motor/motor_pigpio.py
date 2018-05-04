@@ -57,23 +57,24 @@ class motor(object):
 	def increaseW(self, step=1):
 		"increases W% for the motor"
 
-		self.setW(self.__W + step)
+		self.setW(self.__W + int(step))
 
 	def decreaseW(self, step=1):
 		"decreases W% for the motor"
 		
-		self.setW(self.__W - step)
+		self.setW(self.__W - int(step))
 
 	def setW(self, W):
 		"Checks W% is between limits than sets it"
 
-		self.__W = int(round(float(W) / 10)) * 10
-		if self.__W < self.__WMin:
-			self.__W = self.__WMin
-		if self.__W > self.__WMax:
-			self.__W = self.__WMax
+		W = int(round(float(W) / 10)) * 10
+		if W < self.__WMin:
+			W = self.__WMin
+		if W > self.__WMax:
+			W = self.__WMax
 
 		#print self.name, self.__W;
-		if self.powered:
+		if (W != self.__W and self.powered):
+			self.__W = W;
 			self.__IO.set_servo_pulsewidth(self.__pin, self.__W)
 
